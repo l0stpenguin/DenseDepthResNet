@@ -30,6 +30,25 @@ def get_nyu_data(batch_size, nyu_data_zipfile='nyu_data.zip'):
 
     return data, nyu2_train, nyu2_test, shape_rgb, shape_depth
 
+def get_redweb_data(batch_size, data_zipfile='ReDWeb_V1.zip'):
+    data = extract_zip(data_zipfile)
+
+    nyu2_train = list((row.split(',') for row in (data['ReDWeb_V1/redweb_train.csv']).decode("utf-8").split('\n') if len(row) > 0))
+    nyu2_test = list((row.split(',') for row in (data['ReDWeb_V1/redweb_test.csv']).decode("utf-8").split('\n') if len(row) > 0))
+    nyu2_test = []
+    shape_rgb = (batch_size, 480, 640, 3)
+    shape_depth = (batch_size, 240, 320, 1)
+
+    return data, nyu2_train, nyu2_test, shape_rgb, shape_depth
+
+def get_redweb_train_test_data(batch_size):
+    data, redweb_train, redweb_test, shape_rgb, shape_depth = get_redweb_data(batch_size)
+
+    train_generator = NYU_BasicAugmentRGBSequence(data, redweb_train, batch_size=batch_size, shape_rgb=shape_rgb, shape_depth=shape_depth)
+    test_generator = NYU_BasicRGBSequence(data, redweb_test, batch_size=batch_size, shape_rgb=shape_rgb, shape_depth=shape_depth)
+
+    return train_generator, test_generator
+
 def get_nyu_train_test_data(batch_size):
     data, nyu2_train, nyu2_test, shape_rgb, shape_depth = get_nyu_data(batch_size)
 
