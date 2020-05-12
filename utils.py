@@ -27,7 +27,7 @@ def scale_up(scale, images):
 def load_images(image_files):
     loaded_images = []
     for file in image_files:
-        x = np.clip(np.asarray(Image.open( file ), dtype=float) / 255, 0, 1)
+        x = np.clip(np.asarray(Image.open( file ).resize((640,480), Image.ANTIALIAS), dtype=float) / 255, 0, 1)
         loaded_images.append(x)
     return np.stack(loaded_images, axis=0)
 
