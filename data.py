@@ -84,12 +84,17 @@ class RedWeb_BasicAugmentRGBSequence(Sequence):
             index = min((idx * self.batch_size) + i, self.N-1)
 
             sample = self.dataset[index]
-            rgb_sample = cv2.imdecode(np.asarray(self.data['{}'.format(sample)]), 1)
-            depth_sample = self.data['{}'.format(sample)] 
+            # rgb_sample = cv2.imdecode(np.asarray(self.data['{}'.format(sample[0])]), 1)
+            rgb_sample = np.asarray(Image.open( BytesIO(self.data[sample[0]])))
+            rgb_sample = resize(rgb_sample, (self.shape_rgb[1], self.shape_rgb[2]), preserve_range=True, mode='reflect', anti_aliasing=True )
+            # depth_sample = self.data['{}'.format(sample[1])] 
+            
+            depth_sample = np.asarray(Image.open( BytesIO(self.data[sample[1]])))
             depth_sample = resize(depth_sample, (self.shape_depth[1], self.shape_depth[2]), preserve_range=True, mode='reflect', anti_aliasing=True )
             
             x = np.clip(rgb_sample/255, 0, 1)
             y = np.clip(depth_sample, 10, self.maxDepth)
+            y = y[..., np.newaxis]
             y = DepthNorm(y, maxDepth=self.maxDepth)
 
             batch_x[i] = x
