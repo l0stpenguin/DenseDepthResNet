@@ -97,7 +97,7 @@ def get_redweb_callbacks(model, basemodel, train_generator, test_generator, test
             self.train_idx = np.random.randint(low=0, high=len(train_generator), size=10)
             self.test_idx = np.random.randint(low=0, high=len(test_generator), size=10)
 
-        def on_epoch_end(self, epoch, logs=None):            
+        def on_epoch_end(self, epoch, logs):            
             if not test_set == None:
                 # Samples using current model
                 import matplotlib.pyplot as plt
